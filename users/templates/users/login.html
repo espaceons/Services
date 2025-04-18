@@ -1,0 +1,108 @@
+{# users/templates/users/login.html #}
+
+{# Indique que ce template hérite du template de base (base.html). #}
+{# base.html doit contenir les liens vers les fichiers CSS et JS de Bootstrap. #}
+{% extends 'base.html' %}
+{% load static %}
+    
+    {# Charge les fichiers statiques (CSS, JS, images) de Django. #}
+    {# Assurez-vous que le dossier 'static' est correctement configuré dans vos paramètres Django. #}
+
+
+{# Définit le titre spécifique de cette page. Ce contenu remplacera le bloc 'title' dans base.html. #}
+
+{% block title %}Connexion{% endblock %}
+
+{# Définit le contenu principal de cette page. Ce contenu remplacera le bloc 'content' dans base.html. #}
+{% block content %}
+
+    {# Utilise le système de grille Bootstrap pour centrer le formulaire et limiter sa largeur. #}
+    {# 'row' crée une ligne. 'justify-content-center' centre le contenu dans la ligne. 'mt-5' ajoute une marge supérieure. #}
+    <div class="row justify-content-center mt-5">
+
+        {# Définit la colonne contenant le formulaire. 'col-md-6' prend 6 colonnes sur les écrans moyens et plus grands. #}
+        {# 'col-lg-4' prend 4 colonnes sur les grands écrans et plus grands. Par défaut, il prend 12 colonnes sur les petits écrans. #}
+        <div class="col-md-6 col-lg-4">
+
+            {# Utilise la classe 'card' de Bootstrap pour créer un conteneur stylisé autour du formulaire. #}
+            <div class="card">
+
+                {# En-tête de la carte, souvent utilisé pour le titre. #}
+                <div class="card-header">
+                    {# Titre de la carte, centré. #}
+                    <h3 class="card-title text-center">Connexion</h3>
+                </div>
+
+                {# Corps de la carte, contient le formulaire. #}
+                <div class="card-body">
+
+                    {# Début du formulaire HTML, méthode POST pour envoyer les données. #}
+                    <form method="post">
+                        {# Balise de sécurité CSRF requise dans les formulaires POST de Django. #}
+                        {% csrf_token %}
+
+                        {# Boucle à travers chaque champ défini dans le formulaire Django passé à ce template. #}
+                        {% for field in form %}
+                            {# 'mb-3' ajoute une marge de 3 unités (par défaut, 1rem = 16px) en bas de chaque groupe de champ. #}
+                            <div class="mb-3">
+                                {# Balise 'label' pour le champ. 'form-label' applique le style de label Bootstrap. #}
+                                {# 'field.id_for_label' génère l'attribut 'for' correct pour associer le label à l'input. #}
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+
+                                {# Rend le champ d'input lui-même (input, select, textarea, etc.). #}
+                                {# Pour que Bootstrap le style correctement, il a besoin de la classe 'form-control'. #}
+                                {# Django ne l'ajoute pas par défaut. Une façon simple de l'ajouter sans crispy-forms #}
+                                {# est de le faire manuellement ici, ou via un filtre personnalisé si nécessaire. #}
+                                {# L'approche la plus courante en manuel est de rendre le widget avec la classe : #}
+                                {# <input type="{{ field.widget_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control" value="{{ field.value|default_if_none:'' }}" {% if field.field.required %}required{% endif %}> #}
+                                {# Mais la méthode ci-dessous est plus courte et fonctionne souvent si le widget par défaut est simple : #}
+                                {{ field }}
+                                {# NOTE : Pour une application complète sans crispy-forms, il est recommandé de personnaliser les widgets #}
+                                {# dans votre forms.py pour ajouter la classe 'form-control' ou de rendre le champ plus manuellement ici. #}
+
+                                {# Affiche le texte d'aide pour le champ, si disponible. 'form-text' style le texte d'aide Bootstrap. #}
+                                {% if field.help_text %}
+                                    <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {# Boucle à travers les erreurs spécifiques à ce champ et les affiche. #}
+                                {% for error in field.errors %}
+                                    {# 'alert alert-danger' style l'erreur comme une alerte rouge de Bootstrap. 'mt-1' ajoute une petite marge supérieure. #}
+                                    <div class="alert alert-danger mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        {# Gère et affiche les erreurs qui ne sont pas liées à un champ spécifique (e.g., identifiants de connexion incorrects). #}
+                        {% if form.non_field_errors %}
+                            {# Affiche ces erreurs comme une alerte générale rouge. #}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {# Bouton de soumission du formulaire. #}
+                        {# 'btn' est la classe de base pour les boutons Bootstrap. 'btn-primary' donne le style de bouton principal (bleu par défaut). #}
+                        {# 'w-100' rend le bouton plein largeur (width 100%). #}
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+
+                    </form> {# Fin du formulaire #}
+
+                </div> {# Fin du corps de la carte #}
+
+                {# Pied de page de la carte, souvent utilisé pour des liens supplémentaires (inscription, mot de passe oublié). #}
+                <div class="card-footer text-center">
+                    {# Texte et lien pour l'inscription. 'small' réduit la taille du texte. #}
+                    <small>Pas encore de compte ? <a href="{% url 'users:register' %}">S'inscrire</a></small>
+                    {# Vous pourriez ajouter un lien "Mot de passe oublié ?" ici aussi #}
+                </div>
+
+            </div> {# Fin de la carte #}
+
+        </div> {# Fin de la colonne #}
+
+    </div> {# Fin de la ligne #}
+
+{% endblock %} {# Fin du bloc 'content' #}

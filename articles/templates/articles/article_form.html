@@ -1,0 +1,85 @@
+{# articles/templates/articles/article_form.html #}
+
+{% extends 'base.html' %}
+
+{% load static %} {# Toujours utile si vous référencez des fichiers statiques dans ce template #}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1>
+
+    {# Lien de retour vers la liste des articles #}
+    <p>
+        <a href="{% url 'articles:article_list' %}" class="btn btn-secondary mb-3">
+            <i class="bi bi-arrow-left-circle me-2">Retour à la Liste</i> 
+        </a>
+    </p>
+
+    {# Formulaire pour créer ou modifier un article #}
+    <form method="post">
+        {% csrf_token %} {# Balise de sécurité obligatoire #}
+
+        {# === Début du rendu manuel du formulaire sans crispy-forms === #}
+        {% comment %}
+        Assurez-vous que vos widgets dans articles/forms.py ont la classe 'form-control'.
+        Sinon, vous devrez ajouter class="form-control" manuellement à l'intérieur de chaque input, textarea, select, etc.
+        Ceci est l'approche la plus simple si les classes sont déjà dans les widgets :
+        {% endcomment %}
+
+        {# Gère et affiche les erreurs non liées aux champs spécifiques #}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Boucle à travers chaque champ défini dans le formulaire Django #}
+        {% for field in form %}
+            {# 'mb-3' ajoute une marge de 3 unités en bas de chaque groupe de champ (label + input + aide + erreurs) #}
+            <div class="mb-3">
+                {# Balise 'label' avec la classe 'form-label' de Bootstrap #}
+                {# 'field.id_for_label' génère l'attribut 'for' correct #}
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+
+                {# Rend le champ d'input lui-même (input, select, textarea, etc.) #}
+                {# Pour que Bootstrap le style, le widget doit avoir la classe 'form-control' (ou 'form-select', etc.) #}
+                {# Si vous ne l'avez pas fait dans forms.py, vous pourriez devoir rendre l'input manuellement ici pour ajouter la classe. #}
+                {# Exemple de rendu manuel pour un input texte (plus complexe pour d'autres types) : #}
+                {% comment %}
+                <input type="{{ field.widget_type }}"
+                       name="{{ field.name }}"
+                       id="{{ field.id_for_label }}"
+                       class="form-control {% if field.errors %}is-invalid{% endif %}" {# Ajoute is-invalid si erreurs #}
+                       value="{{ field.value|default_if_none:'' }}" {# Pré-remplit la valeur #}
+                       {% for attr, value in field.field.widget.attrs.items %}{{ attr }}="{{ value }}"{% endfor %} {# Conserve les autres attributs #}
+                >
+                {% endcomment %}
+                {# Rendu simple (fonctionne si form-control est dans le widget en forms.py) : #}
+                {{ field }}
+
+
+                {# Affiche le texte d'aide pour le champ, si disponible. 'form-text' style le texte d'aide. #}
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text|safe }}</div> {# Utilisez |safe si le help_text contient du HTML #}
+                {% endif %}
+
+                {# Boucle à travers les erreurs spécifiques à ce champ et les affiche avec le style d'alerte Bootstrap #}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        {# === Fin du rendu manuel du formulaire === #}
+
+
+        {# Bouton de soumission du formulaire #}
+        <button type="submit" class="btn btn-success mt-3">
+            <i class="bi bi-check-circle me-2">Enregistrer</i>
+        </button>
+
+    </form>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{# Charge les balises pour gérer les fichiers statiques de Django #}
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        {# Le lien .navbar-brand agit souvent comme un lien vers la page d'accueil et contient le nom/logo de la marque #}
+        {% if user.is_authenticated and user.is_staff or user.is_superuser %}
+            <a class="navbar-brand" href="{% url 'dashboard:index' %}">
+                <img src="{% static 'images/logo.png' %}"
+                    alt="Logo de votre application"
+                    width="40" height="40" {# Assurez-vous que largeur et hauteur sont égales pour un cercle parfait #}
+                    class="d-inline-block align-top rounded-circle me-2">{# Ajout de rounded-circle #} {# me-2 ajoute une petite marge à droite du logo #}
+
+                {# Le texte de la marque (optionnel, vous pouvez avoir juste le logo ou les deux) #}
+                Services
+            </a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'dashboard:client_dashboard' %}">
+                {# Balise <img> pour votre logo #}
+                {# 'src' utilise la balise {% static %} pour pointer vers le fichier image dans votre dossier statique #}
+                {# 'alt' est important pour l'accessibilité et s'affiche si l'image ne peut pas être chargée #}
+                {# Ajoutez des classes Bootstrap (comme 'd-inline-block', 'align-top') et/ou des styles pour contrôler la taille et l'alignement vertical si nécessaire #}
+                <img src="{% static 'images/logo.png' %}"
+                    alt="Logo de votre application"
+                    width="40" height="40" {# Assurez-vous que largeur et hauteur sont égales pour un cercle parfait #}
+                    class="d-inline-block align-top rounded-circle me-2">{# Ajout de rounded-circle #} {# me-2 ajoute une petite marge à droite du logo #}
+
+                {# Le texte de la marque (optionnel, vous pouvez avoir juste le logo ou les deux) #}
+                Services
+            </a>
+        {% endif %}
+        {# Balise <a> pour le logo et le nom de la marque #}
+        {# 'href' pointe vers la page d'accueil de votre application #}
+        
+
+        {# Bouton pour le menu responsive (pour les petits écrans) #}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {# Le contenu du menu qui se replie #}
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                {# Votre logique de connexion/déconnexion #}
+                {% if user.is_authenticated %}
+                    {% if user.is_staff or user.is_superuser%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'articles:article_list' %}">Articles</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Demande</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:logout' %}">Déconnexion</a>
+                    </li>
+                    
+                    {% endif %}
+                {# Lien d'inscription, si vous l'avez #}
+                {% if not user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:register' %}">Inscription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:login' %}">Connexion</a>
+                    </li>
+                {% endif %}
+                {# Ajoutez d'autres éléments de navigation ici si nécessaire #}
+            </ul>
+            {# Vous pouvez ajouter d'autres éléments (formulaires de recherche, boutons, etc.) ici si vous le souhaitez #}
+        </div>
+    </div>
+</nav>

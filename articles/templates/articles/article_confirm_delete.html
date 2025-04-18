@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4 text-danger">{{ page_title }}</h1> {# Titre en rouge pour indiquer un danger #}
+
+    <div class="alert alert-warning" role="alert">
+        Êtes-vous sûr de vouloir supprimer l'article "<strong>{{ article.title }}</strong>" ?
+        Cette action est irréversible.
+    </div>
+
+    {# Formulaire simple pour confirmer la suppression (méthode POST) #}
+    <form method="post">
+        {% csrf_token %} {# Balise de sécurité obligatoire #}
+
+        {# Bouton de confirmation de suppression #}
+        <button type="submit" class="btn btn-danger me-2">
+            <i class="bi bi-trash me-2">Confirmer la Suppression</i> 
+        </button>
+
+        {# Lien pour annuler et retourner à la liste des articles #}
+         <a href="{% url 'articles:article_list' %}" class="btn btn-secondary">
+             <i class="bi bi-x-circle me-2">Annuler</i> 
+         </a>
+    </form>
+
+{% endblock %}

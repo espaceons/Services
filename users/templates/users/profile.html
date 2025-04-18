@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header du profil -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="display-5 fw-bold">Mon Profil</h1>
+            <p class="lead text-muted">Gérez vos informations personnelles</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <!-- Photo de profil + actions -->
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Informations personnelles</h5>
+                        <a href="{% url 'users:edit_profile' %}" class="btn btn-sm btn-light">
+                            <i class="bi bi-pencil-square"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Colonne photo -->
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <div class="position-relative mx-auto" style="width: 150px; height: 150px;">
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture.url }}" 
+                                         class="img-thumbnail rounded-circle w-100 h-100"
+                                         alt="Photo de profil">
+                                {% else %}
+                                    <div class="bg-light d-flex align-items-center justify-content-center rounded-circle w-100 h-100">
+                                        <i class="bi bi-person-fill text-secondary" style="font-size: 3rem;"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mt-3">
+                                <form method="post" action="{% url 'users:upload_profile_pic' %}" enctype="multipart/form-data" class="d-none" id="pictureForm">
+                                    {% csrf_token %}
+                                    <input type="file" name="profile_picture" id="pictureInput" accept="image/*">
+                                </form>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('pictureInput').click()">
+                                    <i class="bi bi-camera"></i> Changer
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Colonne informations -->
+                        <div class="col-md-8">
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold">Nom</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-plaintext">{{ user.username }}</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold">Email</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-plaintext">{{ user.email }}</p>
+                                </div>
+                            </div>
+
+                            {% if user.phone %}
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold">Téléphone</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-plaintext">{{ user.phone }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold">Membre depuis</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-plaintext">{{ user.date_joined|date:"d/m/Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section sécuritaire -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0">Sécurité du compte</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold">Mot de passe</h6>
+                            <p class="text-muted small mb-0">Dernière modification : 
+                                {% if user.last_password_change %}
+                                    {{ user.last_password_change|timesince }}
+                                {% else %}
+                                    jamais
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Script pour prévisualisation de l'image
+document.getElementById('pictureInput').addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.querySelector('.img-thumbnail').src = event.target.result;
+        }
+        reader.readAsDataURL(this.files[0]);
+        document.getElementById('pictureForm').submit();
+    }
+});
+</script>
+{% endblock %}

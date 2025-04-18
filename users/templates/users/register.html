@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h2 class="text-center mb-0">Créer un compte</h2>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Champ Email -->
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email*</label>
+                        {% render_field form.email class="form-control" placeholder="exemple@domain.com" %}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Username -->
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Nom d'utilisateur*</label>
+                        {% render_field form.username class="form-control" placeholder="Choisissez un pseudo" %}
+                        <small class="text-muted">150 caractères max. Lettres, chiffres et @/./+/-/_ seulement.</small>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Mot de passe 1 -->
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">Mot de passe*</label>
+                        {% render_field form.password1 class="form-control" %}
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password1.errors }}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">
+                            - 8 caractères minimum<br>
+                            - Ne pas être trop courant<br>
+                            - Ne pas être entièrement numérique
+                        </small>
+                    </div>
+                    
+                    <!-- Champ Mot de passe 2 -->
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmation du mot de passe*</label>
+                        {% render_field form.password2 class="form-control" %}
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Téléphone (si présent dans le formulaire) -->
+                    {% if form.phone %}
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Téléphone</label>
+                        {% render_field form.phone class="form-control" placeholder="+33 6 12 34 56 78" %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Champ Photo de profil (si présent) -->
+                    {% if form.profile_picture %}
+                    <div class="mb-3">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Photo de profil</label>
+                        {% render_field form.profile_picture class="form-control" %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>S'inscrire
+                        </button>
+                        <a href="{% url 'users:login' %}" class="btn btn-outline-secondary">
+                            Déjà un compte ? Se connecter
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

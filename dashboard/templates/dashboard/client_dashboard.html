@@ -1,0 +1,61 @@
+{# users/templates/users/client_dashboard.html #}
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1>
+
+    <div class="alert alert-success" role="alert">
+        {{ welcome_message }}
+    </div>
+
+    {# Exemple d'affichage de quelques informations de l'utilisateur #}
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Mes Informations</h2>
+            <p>Nom d'utilisateur : {{ user.username }}</p>
+            <p>Email : {{ user.email }}</p>
+            {# Affichez d'autres champs de votre modèle utilisateur ou profil #}
+            {% if user.bio %}
+                <p>Bio : {{ user.bio }}</p>
+            {% endif %}
+             {# Lien vers la page de modification de profil #}
+            <p><a href="{% url 'users:profile' %}" class="btn btn-outline-primary mt-2">Modifier mon Profil</a></p>
+        </div>
+        <div class="col-md-6">
+            <h2>Contenu Personnalisé</h2>
+            {# Affichez ici le contenu personnalisé pour l'utilisateur #}
+            {% comment %}
+            {% if personalized_items %}
+                <ul>
+                {% for item in personalized_items %}
+                    <li>{{ item }}</li> {# Adaptez l'affichage en fonction de vos données #}
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun contenu personnalisé pour le moment.</p>
+            {% endif %}
+            {% endcomment %}
+        </div>
+    </div>
+
+    <hr class="my-4"> {# Ligne de séparation #}
+
+    {# Ajoutez ici d'autres sections pour afficher d'autres données (commandes, paramètres, etc.) #}
+    {% comment %}
+    <h2>Mes Commandes</h2>
+    {% if orders %}
+        ... afficher la liste des commandes ...
+    {% else %}
+        <p>Vous n'avez pas encore passé de commande.</p>
+    {% endif %}
+
+    <h2>Mes Paramètres</h2>
+    {% if settings %}
+       ... afficher les paramètres modifiables ...
+    {% endif %}
+    {% endcomment %}
+
+
+{% endblock %}

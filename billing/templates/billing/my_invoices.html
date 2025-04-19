@@ -1,0 +1,122 @@
+{# Liste des factures client #}
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1>
+
+    {% if invoices %}
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Numéro Facture</th>
+                    <th scope="col">Date Émission</th>
+                    <th scope="col">Date Échéance</th>
+                    <th scope="col">Montant Total</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.issue_date|date:"d/m/Y" }}</td>
+                    <td>{{ invoice.due_date|date:"d/m/Y" }}</td>
+                    <td>{{ invoice.total_amount|floatformat:2 }} €</td> {# Formatte en devise #}
+                    <td>
+                        <span class="badge {% if invoice.statut == 'paid' %}bg-success{% elif invoice.statut == 'pending' %}bg-warning{% elif invoice.statut == 'due' %}bg-danger{% else %}bg-secondary{% endif %}">
+                             {{ invoice.get_statut_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'billing:view_invoice_client' invoice.pk %}" class="btn btn-sm btn-info me-1">
+                            <i class="bi bi-eye me-1"></i> Voir Détails
+                        </a>
+                        <a href="{% url 'billing:download_invoice' invoice.pk %}" class="btn btn-sm btn-secondary me-1">
+                            <i class="bi bi-download me-1"></i> Télécharger PDF
+                        </a>
+                        {% if invoice.statut == 'pending' %}
+                            <a href="{% url 'billing:pay_invoice' invoice.pk %}" class="btn btn-sm btn-success">
+                                <i class="bi bi-credit-card me-1"></i> Payer
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucune facture trouvée.</td>
+                </tr>
+
+                {% endfor %}
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:generate_invoice' %}" class="btn btn-primary">Générer une nouvelle facture</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:export_invoices' %}" class="btn btn-secondary">Exporter les factures</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+
+
+                        <a href="{% url 'billing:send_invoices' %}" class="btn btn-warning">Envoyer les factures par e-mail</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:reminder_invoices' %}" class="btn btn-danger">Envoyer un rappel de paiement</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:delete_invoices' %}" class="btn btn-danger">Supprimer les factures</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:mark_as_paid' %}" class="btn btn-success">Marquer comme payé</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+
+                        <a href="{% url 'billing:mark_as_unpaid' %}" class="btn btn-danger">Marquer comme impayé</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:mark_as_pending' %}" class="btn btn-warning">Marquer comme en attente</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:mark_as_cancelled' %}" class="btn btn-secondary">Marquer comme annulé</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:mark_as_refunded' %}" class="btn btn-info">Marquer comme remboursé</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <a href="{% url 'billing:mark_as_partially_refunded' %}" class="btn btn-light">Marquer comme partiellement remboursé</a>
+                    </td>
+                </tr>
+                
+                        {# Vous pourriez ajouter un bouton "Payer" ici si vous avez un système de paiement #}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">Vous n'avez pas encore de factures.</div>
+    {% endif %}
+
+{% endblock %}

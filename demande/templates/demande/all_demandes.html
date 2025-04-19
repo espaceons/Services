@@ -1,0 +1,102 @@
+
+{% extends 'base.html' %} {# Hérite de  template de base #}
+
+{% load static %} {# Charge les balises statiques si vous utilisez des fichiers statiques ici #}
+
+{% block title %}{{ page_title }}{% endblock %} {# Utilise le titre passé par la vue #}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1> {# Titre de la page #}
+
+     {# Lien de retour vers le tableau de bord administrateur (optionnel) #}
+     <p>
+         {# Assurez-vous que 'dashboard:index' est le nom d'URL correct pour votre tableau de bord admin #}
+         <a href="{% url 'dashboard:index' %}" class="btn btn-secondary mb-3">
+            <i class="bi bi-arrow-left-circle me-2"></i> Retour au Tableau de Bord Admin
+         </a>
+     </p>
+
+    {# Vérifie s'il y a des demandes à afficher #}
+    {% if demandes %}
+        {# Utilise une table Bootstrap pour afficher la liste des demandes #}
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Article</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Date Demande</th>
+                    <th scope="col">Date Fixée</th> {# Date planifiée par l'admin #}
+                    <th scope="col">Validé par</th> {# Qui a validé la demande #}
+                    <th scope="col">Actions</th> {# Colonne pour les boutons d'action #}
+                </tr>
+            </thead>
+            <tbody>
+                {# Boucle sur la liste d'objets Demande passée par la vue list_all_demandes #}
+                {% for demande in demandes %}
+                <tr>
+                    <td>{{ demande.pk }}</td> {# Affiche l'identifiant de la demande #}
+                    <td>{{ demande.client.username }}</td> {# Affiche le nom d'utilisateur du client #}
+                    <td>{{ demande.article.title }}</td> {# Affiche le titre de l'article lié #}
+                    <td>
+                        {# Utilise des badges Bootstrap pour styliser le statut #}
+                        <span class="badge {% if demande.statut == 'en_attente' %}bg-warning{% elif demande.statut == 'acceptee' %}bg-success{% elif demande.statut == 'rejetee' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ demande.get_statut_display }} {# Affiche le label lisible du statut #}
+                        </span>
+                    </td>
+                    <td>{{ demande.date_demande|date:"d/m/Y H:i" }}</td> {# Affiche et formate la date de demande #}
+                    <td>
+                        {% if demande.date_fixee %}
+                            {{ demande.date_fixee|date:"d/m/Y H:i" }} {# Affiche et formate la date fixée si elle existe #}
+                        {% else %}
+                            N/A {# Affiche N/A si la date n'est pas encore fixée #}
+                        {% endif %}
+                    </td>
+                     <td>
+                        {% if demande.validee_par %}
+                             {{ demande.validee_par.username }} {# Affiche le nom d'utilisateur de celui qui a validé #}
+                         {% else %}
+                             N/A {# Si pas encore validé #}
+                         {% endif %}
+                     </td>
+                    <td>
+                        {# Lien pour voir les détails de la demande côté admin #}
+                        {# Assurez-vous que 'demande:view_demande_admin' est le nom d'URL correct et prend le pk #}
+                        <a href="{% url 'demande:view_demande_admin' demande.pk %}" class="btn btn-sm btn-info me-1">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+
+                        {# Lien/Bouton pour valider ou modifier la demande #}
+                        {% if demande.statut == 'en_attente' %} {# Si la demande est en attente, proposer de valider/planifier #}
+                            {# Assurez-vous que 'demande:validate_demande' est le nom d'URL correct et prend le pk #}
+                            <a href="{% url 'demande:validate_demande' demande.pk %}" class="btn btn-sm btn-success">
+                                <i class="bi bi-check-circle"></i> Valider/Planifier
+                            </a>
+                        {% else %} {# Si la demande n'est plus en attente, proposer de modifier le statut/date #}
+                            {# Assurez-vous que 'demande:validate_demande' est le nom d'URL correct et prend le pk #}
+                             <a href="{% url 'demande:validate_demande' demande.pk %}" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-pencil"></i> Modifier
+                             </a>
+                        {% endif %}
+                        {# Note : Si vous avez choisi l'approche du bouton "Accepter" direct sans formulaire de validation séparé, #}
+                        {# le bouton de validation/modification ici pourrait pointer vers une autre vue si la validation se fait ailleurs. #}
+                         {# Si vous utilisez la suppression, ajoutez un bouton de suppression ici #}
+                         {% comment %}
+                         <a href="{% url 'demande:delete_demande' demande.pk %}" class="btn btn-sm btn-danger ms-1">
+                            <i class="bi bi-trash"></i> Supprimer
+                         </a>
+                         {% endcomment %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        {# Message si aucune demande n'est trouvée dans la liste #}
+        <div class="alert alert-info" role="alert">
+            Aucune demande trouvée pour le moment.
+        </div>
+    {% endif %}
+
+{% endblock %}

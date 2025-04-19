@@ -1,0 +1,68 @@
+{# demande/templates/demande/demande_detail_client.html #}
+
+{% extends 'base.html' %} {# Hérite de votre template de base #}
+
+{% load static %} {# Charge les balises statiques si nécessaire #}
+
+{% block title %}{{ page_title }}{% endblock %} {# Utilise le titre passé par la vue #}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1> {# Titre de la page #}
+
+    {# Lien de retour vers la liste des demandes du client #}
+    {# Assurez-vous que 'demande:my_demandes' est le nom d'URL correct #}
+    <p>
+        <a href="{% url 'demande:my_demandes' %}" class="btn btn-secondary mb-3">
+            <i class="bi bi-arrow-left-circle me-2"></i> Retour à Mes Demandes
+        </a>
+
+        {# === Liens Modifier/Supprimer (visibles seulement si statut est 'en_attente') === #}
+        {% if demande.statut == 'en_attente' %}
+             {# Lien pour modifier la demande depuis la page de détails #}
+            {% url 'demande:update_demande_client' demande.pk as update_url %} {# Stocke l'URL dans une variable pour plus de clarté #}
+            <a href="{{ update_url }}" class="btn btn-warning mb-3 ms-2">
+                 <i class="bi bi-pencil me-2"></i> Modifier
+            </a>
+            {# Lien pour supprimer la demande depuis la page de détails (mène à la page de confirmation) #}
+             {% url 'demande:delete_demande_client' demande.pk as delete_url %} {# Stocke l'URL dans une variable #}
+             <a href="{{ delete_url }}" class="btn btn-danger mb-3 ms-2">
+                <i class="bi bi-trash me-2"></i> Supprimer
+             </a>
+        {% endif %}
+        {# =============================================================================== #}
+    </p>
+
+    {# Utilise une carte Bootstrap pour afficher les détails #}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Détails de la Demande #{{ demande.pk }}</h5> {# Affiche l'ID de la demande #}
+            <p><strong>Article Concerné :</strong> {{ demande.article.title }}</p> {# Affiche le titre de l'article lié #}
+            <p>
+                <strong>Statut Actuel :</strong>
+                {# Utilise des badges Bootstrap pour styliser le statut #}
+                <span class="badge {% if demande.statut == 'en_attente' %}bg-warning{% elif demande.statut == 'acceptee' %}bg-success{% elif demande.statut == 'rejetee' %}bg-danger{% else %}bg-secondary{% endif %}">
+                    {{ demande.get_statut_display }} {# Affiche le label lisible du statut #}
+                </span>
+            </p>
+            <p><strong>Date de Soumission :</strong> {{ demande.date_demande|date:"d/m/Y H:i" }}</p> {# Affiche et formate la date de soumission #}
+
+            {% if demande.date_fixee %}
+                <p><strong>Date Fixée par l'Administrateur :</strong> {{ demande.date_fixee|date:"d/m/Y H:i" }}</p> {# Affiche la date fixée si elle existe #}
+            {% endif %}
+
+            <hr> {# Ligne de séparation #}
+
+            <h6>Détails du Service Demandé :</h6>
+            <p>{{ demande.details_service }}</p> {# Affiche la description du service demandé #}
+
+            {% if demande.validee_par %}
+                <hr>
+                <p><strong>Validée par :</strong> {{ demande.validee_par.username }}</p> {# Affiche qui a validé si c'est fait #}
+            {% endif %}
+
+            {# Vous pouvez ajouter d'autres informations ici si nécessaire #}
+
+        </div>
+    </div>
+
+{% endblock %}

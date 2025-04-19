@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import user_passes_test # Pour restreindre l
 from django.contrib.auth import get_user_model # Pour accéder à votre modèle utilisateur
 from django.contrib.auth.decorators import login_required
 
-from articles.models import Article # Pour restreindre l'accès aux utilisateurs connectés
+from articles.models import Article
+from demande.models import Demande # Pour restreindre l'accès aux utilisateurs connectés
 # Récupérez votre modèle utilisateur personnalisé
 CustomUser = get_user_model()
 
@@ -13,6 +14,9 @@ def is_staff_or_superuser(user):
     return user.is_staff or user.is_superuser
 
 
+# Vue pour le tableau de bord administrateur
+#------------------------------------------------
+
 
 # Applique le décorateur pour restreindre l'accès à la vue
 @user_passes_test(is_staff_or_superuser)
@@ -20,12 +24,34 @@ def admin_dashboard(request):
     # Récupérer les données à afficher sur le tableau de bord
     total_users = CustomUser.objects.count()
     total_articles = Article.objects.count()
+    total_demandes = Demande.objects.count() # Nombre total de toutes les demandes
+
     # Ajoutez ici d'autres requêtes à la base de données pour obtenir des statistiques ou informations clés
+
+    # === Compter les demandes par statut ===
+    demandes_en_attente_count = Demande.objects.filter(statut='en_attente').count()
+    demandes_acceptees_count = Demande.objects.filter(statut='acceptee').count()
+    demandes_rejetee_count = Demande.objects.filter(statut='rejetee').count()
+    demandes_completee_count = Demande.objects.filter(statut='completee').count()
+    demandes_annulee_count = Demande.objects.filter(statut='annulee').count()
+    # ======================================
+
 
     context = {
         'total_users': total_users,
         'total_articles': total_articles,
         'page_title': 'Tableau de Bord Administrateur', # Titre pour le template
+        'total_demandes': total_demandes,
+
+        # === les comptes par statut au contexte ===
+        'demandes_en_attente_count': demandes_en_attente_count,
+        'demandes_acceptees_count': demandes_acceptees_count,
+        'demandes_rejetee_count': demandes_rejetee_count,
+        'demandes_completee_count': demandes_completee_count,
+        'demandes_annulee_count': demandes_annulee_count,
+        # ================================================
+
+
         # Ajoutez d'autres données au contexte
     }
     return render(request, 'dashboard/admin_dashboard.html', context)

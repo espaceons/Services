@@ -1,0 +1,64 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ page_title }}</h1>
+
+    {# Lien de retour vers la liste de toutes les demandes #}
+    <p>
+        <a href="{% url 'demande:list_all_demandes' %}" class="btn btn-secondary mb-3">
+            <i class="bi bi-arrow-left-circle me-2"></i> Retour à Toutes les Demandes
+        </a>
+        {# Optionnel: Lien rapide vers une page de modification si nécessaire (par exemple, pour rejeter ou modifier d'autres détails) #}
+        {% comment %}
+        <a href="{% url 'demande:validate_demande' demande.pk %}" class="btn btn-warning ms-2">
+            <i class="bi bi-pencil"></i> Modifier la Demande (Statut, Date Fixée, etc.)
+        </a>
+        {% endcomment %}
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Demande #{{ demande.pk }}</h5>
+            <p><strong>Client :</strong> {{ demande.client.username }}</p>
+            <p><strong>Article Concerné :</strong> {{ demande.article.title }}</p>
+            <p><strong>Statut Actuel :</strong> <span class="badge {% if demande.statut == 'en_attente' %}bg-warning{% elif demande.statut == 'acceptee' %}bg-success{% elif demande.statut == 'rejetee' %}bg-danger{% else %}bg-secondary{% endif %}">{{ demande.get_statut_display }}</span></p>
+            <p><strong>Date de Soumission :</strong> {{ demande.date_demande|date:"d/m/Y H:i" }}</p>
+
+            {% if demande.date_fixee %}
+                <p><strong>Date Fixée :</strong> {{ demande.date_fixee|date:"d/m/Y H:i" }}</p>
+            {% endif %}
+
+            {% if demande.validee_par %}
+                <p><strong>Validée par :</strong> {{ demande.validee_par.username }}</p>
+            {% endif %}
+
+             <hr>
+
+            <h6>Détails du Service Demandé :</h6>
+            <p>{{ demande.details_service }}</p>
+
+            {# === Bouton d'Acceptation (visible seulement pour superuser/staff et si la demande est en attente) === #}
+            {# Vérifie si l'utilisateur connecté est staff ou superuser ET si le statut de la demande est 'en_attente' #}
+            {% if user.is_staff or user.is_superuser %}
+                 {% if demande.statut == 'en_attente' %}
+                    <hr> {# Ligne de séparation avant les actions #}
+                    <form method="post" action="{% url 'demande:accept_demande' demande.pk %}"> {# Le formulaire soumet à la nouvelle URL d'acceptation #}
+                         {% csrf_token %} {# Balise de sécurité #}
+                         <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i> Accepter la Demande
+                         </button>
+                         {# Vous pourriez ajouter ici un bouton pour "Rejeter" la demande, pointant vers une autre URL/vue #}
+                         {# <button type="submit" class="btn btn-danger ms-2" name="action" value="reject">Rejeter la Demande</button> #}
+                    </form>
+                 {% endif %}
+            {% endif %}
+             {# === Fin du Bouton d'Acceptation === #}
+
+
+        </div>
+    </div>
+
+{% endblock %}

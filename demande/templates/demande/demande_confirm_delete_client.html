@@ -1,0 +1,31 @@
+{# demande/templates/demande/demande_confirm_delete_client.html #}
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4 text-danger">{{ page_title }}</h1>
+
+    <div class="alert alert-warning" role="alert">
+        Êtes-vous sûr de vouloir supprimer votre demande pour "<strong>{{ demande.article.title }}</strong>" (Demande #{{ demande.pk }}) ?
+        Cette action est irréversible.
+    </div>
+
+    {# Formulaire simple qui envoie une requête POST à la vue de suppression #}
+    <form method="post">
+        {% csrf_token %} {# Balise de sécurité obligatoire pour les formulaires POST #}
+
+        {# Bouton de confirmation de suppression. Son type="submit" déclenchera la vue delete_demande_client (qui gère le POST). #}
+        <button type="submit" class="btn btn-danger me-2">
+            <i class="bi bi-trash me-2"></i> Oui, Supprimer ma Demande
+        </button>
+
+        {# Lien pour annuler et retourner à la page de détails de la demande #}
+         <a href="{% url 'demande:view_my_demande' demande.pk %}" class="btn btn-secondary">
+             <i class="bi bi-x-circle me-2"></i> Annuler
+         </a>
+    </form>
+
+{% endblock %}

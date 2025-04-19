@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'widget_tweaks',  # Pour personnaliser les formulaires
     'dashboard',# Pour l'application de tableau de bord
     'articles',# Pour l'application d'articles
+    'demande',# Pour l'application de demande
+    'billing',# Pour l'application de facturation
 ]
 
 MIDDLEWARE = [

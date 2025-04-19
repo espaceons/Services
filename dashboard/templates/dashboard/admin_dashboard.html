@@ -1,47 +1,97 @@
 {# dashboard/templates/dashboard/admin_dashboard.html #}
+
 {% extends 'base.html' %}
 
-{# Définit le titre de la page #}
+{% load static %}
+
 {% block title %}{{ page_title }}{% endblock %}
 
-{# Définit le contenu principal #}
 {% block content %}
     <h1 class="mb-4">{{ page_title }}</h1>
 
-    {# Exemple de mise en page avec des cartes Bootstrap pour afficher des statistiques #}
-    <div class="row">
-        <div class="col-md-4"> {# Une colonne qui prend 4/12 sur les écrans moyens et plus grands #}
-            <div class="card text-white bg-primary mb-3"> {# Carte bleue #}
+    {# Première ligne avec les statistiques générales #}
+    <div class="row mb-4"> {# mb-4 ajoute une marge en bas de cette ligne #}
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
                 <div class="card-header">Utilisateurs Enregistrés</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ total_users }}</h5> {# Affiche le nombre total d'utilisateurs #}
-                    <p class="card-text">Nombre total d'utilisateurs inscrits sur la plateforme.</p>
+                    <h5 class="card-title fs-3">{{ total_users }}</h5>
+                    <p class="card-text">Nombre total d'utilisateurs.</p>
                 </div>
             </div>
         </div>
 
-        {# Ajoutez d'autres cartes pour afficher d'autres statistiques ou informations #}
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3"> {# Carte verte #}
-                <div class="card-header">Articles saisie</div>
+        <!--<div class="col-md-4">
+            <div class="card text-white bg-secondary mb-3"> {# Couleur secondaire pour le total #}
+                <div class="card-header">Total Demandes</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ total_articles }}</h5>
-                    <p class="card-text">Nombre total des articles</p>
+                     <h5 class="card-title fs-3">{{ total_demandes }}</h5>
+                     <p class="card-text">Nombre total de toutes les demandes.</p>
+                </div>
+            </div>
+        </div>-->
+
+        {# Ajoutez d'autres statistiques générales si vous en avez #}
+
+    </div> {# Fin de la première ligne #}
+
+    {# Deuxième ligne avec les statistiques par statut de demande #}
+    <!--<h2>Statistiques des Demandes par Statut</h2>-->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3"> {# Carte jaune pour En attente #}
+                <div class="card-header">En Attente de Validation</div>
+                <div class="card-body">
+                    <h5 class="card-title fs-3">{{ demandes_en_attente_count }} / {{ total_demandes }}</h5>
+                    <p class="card-text">Demandes en cours de révision.</p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card text-white bg-info mb-3"> {# Carte bleue ciel #}
-                <div class="card-header">Nombre des Demande</div>
+            <div class="card text-white bg-success mb-3"> {# Carte verte pour Acceptée #}
+                <div class="card-header">Acceptées</div>
                 <div class="card-body">
-                    <h5 class="card-title">...</h5>
-                    <p class="card-text">Quelque information importante ici.</p>
+                    <h5 class="card-title fs-3">{{ demandes_acceptees_count }} / {{ total_demandes }}</h5>
+                    <p class="card-text">Demandes validées et planifiées.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Vous pouvez ajouter d'autres sections ici, comme des tables des derniers utilisateurs, etc. #}
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3"> {# Carte rouge pour Rejetée #}
+                <div class="card-header">Rejetées</div>
+                <div class="card-body">
+                    <h5 class="card-title fs-3">{{ demandes_rejetee_count }} / {{ total_demandes }}</h5>
+                    <p class="card-text">Demandes refusées par l'administration.</p>
+                </div>
+            </div>
+        </div>
+
+         <div class="col-md-4">
+            <div class="card text-white bg-info mb-3"> {# Carte bleue pour Complétée #}
+                <div class="card-header">Complétées</div>
+                <div class="card-body">
+                    <h5 class="card-title fs-3">{{ demandes_completee_count }} / {{ total_demandes }}</h5>
+                    <p class="card-text">Demandes dont le service a été rendu.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-3"> {# Carte foncée pour Annulée #}
+                <div class="card-header">Annulées</div>
+                <div class="card-body">
+                    <h5 class="card-title fs-3">{{ demandes_annulee_count }} / {{ total_demandes }}</h5>
+                    <p class="card-text">Demandes annulées (par le client ou admin).</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div> {# Fin de la deuxième ligne #}
+
+    {# Vous pouvez ajouter d'autres sections ici, comme des tableaux des derniers utilisateurs, etc. #}
+
 
 {% endblock %}

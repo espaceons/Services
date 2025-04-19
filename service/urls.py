@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('users.urls')),  # Incluez les URLs de l'application users
     path('admindashboard/', include('dashboard.urls')), # Inclure les URLs de votre tableau de bord
     path('articles/', include('articles.urls')), # Inclure les URLs de votre application articles
+    path('demandes/', include('demande.urls')), # Inclure les URLs de votre application demande
+    path('factures/', include('billing.urls')), # Inclure les URLs de votre application factures
 ]
 
 # Ajoutez ceci SEULEMENT en mode DÉVELOPPEMENT (DEBUG=True)

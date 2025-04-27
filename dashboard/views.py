@@ -36,6 +36,9 @@ def admin_dashboard(request):
     demandes_annulee_count = Demande.objects.filter(statut='annulee').count()
     # ======================================
 
+    # Dernières demandes
+    dernieres_demandes = Demande.objects.all().order_by('-date_demande')[:5]
+
 
     context = {
         'total_users': total_users,
@@ -60,26 +63,20 @@ def admin_dashboard(request):
 # comme LoginRequiredMixin et UserPassesTestMixin pour un contrôle d'accès basé sur les classes.
 
 
-
 # Vue pour le tableau de bord client
-@login_required # Seuls les utilisateurs connectés peuvent accéder à cette vue
+@login_required
 def client_dashboard(request):
-    # L'utilisateur connecté est accessible via request.user
-    user = request.user
+    # Statistique des demande du client
 
-    # Récupérez ici les données spécifiques à cet utilisateur pour le tableau de bord
-    # Par exemple :
-    # user_orders = Order.objects.filter(user=user) # Si vous avez un modèle Order
-    # user_settings = UserProfileSettings.objects.get_or_create(user=user)[0] # Si vous avez un modèle de paramètres
-    # personalized_content = get_personalized_content(user) # Fonction pour obtenir du contenu personnalisé
-
+    mes_demandes = Demande.objects.filter(client=request.user)
     context = {
-        'user': user,
         'page_title': 'Mon Tableau de Bord',
-        # Ajoutez les données récupérées au contexte
-        # 'orders': user_orders,
-        # 'settings': user_settings,
-        # 'personalized_items': personalized_content,
-        'welcome_message': f"Bonjour, {user.username} ! Bienvenue sur votre tableau de bord."
+        'total_mes_demandes': mes_demandes.count(),
+        'mes_demandes_en_attente': mes_demandes.filter(statut='en_attente').count(),
+        'mes_demandes_acceptees': mes_demandes.filter(statut='acceptee').count(),
+        'mes_demandes_rejetees': mes_demandes.filter(statut='rejetee').count(),
+        'mes_demandes_completees': mes_demandes.filter(statut='completee').count(),
+        'mes_demandes_annulees': mes_demandes.filter(statut='annulee').count(),
+        'dernieres_demandes': mes_demandes.order_by('-date_demande')[:5]
     }
     return render(request, 'dashboard/client_dashboard.html', context)

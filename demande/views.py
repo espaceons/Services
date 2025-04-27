@@ -42,13 +42,23 @@ def create_demande(request):
 
 @login_required
 def list_my_demandes(request):
-    # Récupère seulement les demandes faites par l'utilisateur connecté
-    my_demandes = Demande.objects.filter(client=request.user)
+    """
+    Affiche les demandes de l'utilisateur connecté, avec filtrage optionnel par statut
+    """
+    # Initialise le queryset de base avec toutes les demandes de l'utilisateur
+    demandes = Demande.objects.filter(client=request.user)
+    
+    # Applique le filtre si un statut est spécifié
+    statut = request.GET.get('statut')
+    if statut:
+        demandes = demandes.filter(statut=statut)
+    
     context = {
-        'demandes': my_demandes,
-        'page_title': 'Mes Demandes'
+        'demandes': demandes,
+        'page_title': 'Mes Demandes',
+        'total_demandes': demandes.count(),
     }
-    return render(request, 'demande/my_demandes.html', context) # Template pour lister les demandes du client
+    return render(request, 'demande/my_demandes.html', context)
 
 
 
@@ -89,8 +99,14 @@ def is_staff_or_superuser(user):
 
 @user_passes_test(is_staff_or_superuser)
 def list_all_demandes(request):
+
+    statut = request.GET.get('statut')  # Récupère le paramètre ?statut=xxx
+
     # Récupère toutes les demandes (ou seulement celles en attente si vous préférez)
     all_demandes = Demande.objects.all()
+    if statut:
+        all_demandes = all_demandes.filter(statut=statut) # application du filtre
+
     # all_demandes = Demande.objects.filter(statut='en_attente') # Exemple pour afficher seulement les demandes en attente
     context = {
         'demandes': all_demandes,

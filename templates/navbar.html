@@ -6,7 +6,7 @@
         {# Le lien .navbar-brand agit souvent comme un lien vers la page d'accueil et contient le nom/logo de la marque #}
 
         {# Condition : Si l'utilisateur est authentifié ET (est staff OU est superutilisateur) #}
-        {# J'ai ajouté les parenthèses pour clarifier l'ordre d'évaluation #}
+        
         {% if user.is_authenticated and user.is_staff or user.is_superuser %}
             {# Si l'utilisateur est un admin ou superuser authentifié, le lien mène au tableau de bord admin #}
             <a class="navbar-brand" href="{% url 'dashboard:index' %}">
@@ -22,6 +22,7 @@
         {% else %}
             {# Sinon (utilisateur non authentifié, ou authentifié mais pas admin/superuser - c'est le client) #}
             {# Le lien mène au tableau de bord client ou page par défaut #}
+            
              <a class="navbar-brand" href="{% url 'dashboard:client_dashboard' %}">
                 {# Balise <img> pour votre logo - NE DOIT APPARAÎTRE QU'UNE SEULE FOIS #}
                 <img src="{% static 'images/logo.png' %}"
@@ -58,6 +59,10 @@
                              {# Lien vers la liste de TOUTES les demandes (pour admin) #}
                              <a class="nav-link" href="{% url 'demande:list_all_demandes' %}">Toutes les Demandes</a>
                         </li>
+                        <li class="nav-item">
+                             {# Lien vers la liste de TOUTES les demandes (pour admin) #}
+                             <a class="nav-link" href="{% url 'users:liste_utilisateurs' %}">Liste des utilisateurs</a>
+                        </li>
                     {% else %}
                          {# === Liens visibles seulement si l'utilisateur est authentifié MAIS PAS staff/superuser (c'est le client) === #}
                          <li class="nav-item">
@@ -68,10 +73,7 @@
                             {# Lien pour créer une nouvelle demande (pour le client) #}
                             <a class="nav-link" href="{% url 'demande:create_demande' %}">Nouvelle Demande</a>
                         </li>
-                         {# Si "Mes Demandes" EST le tableau de bord client, ce lien "Tableau de Bord" est redondant et peut être supprimé #}
-                         <li class="nav-item">
-                              <a class="nav-link" href="{% url 'dashboard:client_dashboard' %}">Tableau de Bord Client</a>
-                         </li>
+                         
                     {% endif %}
 
                     {# === Liens visibles pour TOUS les utilisateurs authentifiés (admin ou client) === #}

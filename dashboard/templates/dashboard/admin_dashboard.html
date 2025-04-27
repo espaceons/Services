@@ -10,88 +10,149 @@
     <h1 class="mb-4">{{ page_title }}</h1>
 
     {# Première ligne avec les statistiques générales #}
-    <div class="row mb-4"> {# mb-4 ajoute une marge en bas de cette ligne #}
+    <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Utilisateurs Enregistrés</div>
-                <div class="card-body">
-                    <h5 class="card-title fs-3">{{ total_users }}</h5>
-                    <p class="card-text">Nombre total d'utilisateurs.</p>
+            <a href="{% url 'users:liste_utilisateurs' %}" style="text-decoration: none;">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Utilisateurs Enregistrés</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ total_users }}</h5>
+                        <p class="card-text">Nombre total d'utilisateurs.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
-        <!--<div class="col-md-4">
-            <div class="card text-white bg-secondary mb-3"> {# Couleur secondaire pour le total #}
-                <div class="card-header">Total Demandes</div>
-                <div class="card-body">
-                     <h5 class="card-title fs-3">{{ total_demandes }}</h5>
-                     <p class="card-text">Nombre total de toutes les demandes.</p>
+        <div class="col-md-4">
+            <a href="{% url 'demande:list_all_demandes' %}" style="text-decoration: none;">
+                <div class="card text-white bg-secondary mb-3">
+                    <div class="card-header">Total Demandes</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ total_demandes }}</h5>
+                        <p class="card-text">Nombre total de toutes les demandes.</p>
+                    </div>
                 </div>
-            </div>
-        </div>-->
+            </a>
+        </div>
 
         {# Ajoutez d'autres statistiques générales si vous en avez #}
-
-    </div> {# Fin de la première ligne #}
+    </div>
 
     {# Deuxième ligne avec les statistiques par statut de demande #}
-    <!--<h2>Statistiques des Demandes par Statut</h2>-->
     <div class="row">
         <div class="col-md-4">
-            <div class="card text-white bg-warning mb-3"> {# Carte jaune pour En attente #}
-                <div class="card-header">En Attente de Validation</div>
-                <div class="card-body">
-                    <h5 class="card-title fs-3">{{ demandes_en_attente_count }} / {{ total_demandes }}</h5>
-                    <p class="card-text">Demandes en cours de révision.</p>
+            <a href="{% url 'demande:list_all_demandes' %}?statut=en_attente" style="text-decoration: none;">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header">En Attente de Validation</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ demandes_en_attente_count }} / {{ total_demandes }}</h5>
+                        <p class="card-text">Demandes en cours de révision.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-            <div class="card text-white bg-success mb-3"> {# Carte verte pour Acceptée #}
-                <div class="card-header">Acceptées</div>
-                <div class="card-body">
-                    <h5 class="card-title fs-3">{{ demandes_acceptees_count }} / {{ total_demandes }}</h5>
-                    <p class="card-text">Demandes validées et planifiées.</p>
+            <a href="{% url 'demande:list_all_demandes' %}?statut=acceptee" style="text-decoration: none;">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Acceptées</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ demandes_acceptees_count }} / {{ total_demandes }}</h5>
+                        <p class="card-text">Demandes validées et planifiées.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-            <div class="card text-white bg-danger mb-3"> {# Carte rouge pour Rejetée #}
-                <div class="card-header">Rejetées</div>
-                <div class="card-body">
-                    <h5 class="card-title fs-3">{{ demandes_rejetee_count }} / {{ total_demandes }}</h5>
-                    <p class="card-text">Demandes refusées par l'administration.</p>
+            <a href="{% url 'demande:list_all_demandes' %}?statut=rejetee" style="text-decoration: none;">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-header">Rejetées</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ demandes_rejetee_count }} / {{ total_demandes }}</h5>
+                        <p class="card-text">Demandes refusées par l'administration.</p>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-         <div class="col-md-4">
-            <div class="card text-white bg-info mb-3"> {# Carte bleue pour Complétée #}
-                <div class="card-header">Complétées</div>
-                <div class="card-body">
-                    <h5 class="card-title fs-3">{{ demandes_completee_count }} / {{ total_demandes }}</h5>
-                    <p class="card-text">Demandes dont le service a été rendu.</p>
-                </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-            <div class="card text-white bg-dark mb-3"> {# Carte foncée pour Annulée #}
-                <div class="card-header">Annulées</div>
+            <a href="{% url 'demande:list_all_demandes' %}?statut=completee" style="text-decoration: none;">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Complétées</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ demandes_completee_count }} / {{ total_demandes }}</h5>
+                        <p class="card-text">Demandes dont le service a été rendu.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{% url 'demande:list_all_demandes' %}?statut=annulee" style="text-decoration: none;">
+                <div class="card text-white bg-dark mb-3">
+                    <div class="card-header">Annulées</div>
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">{{ demandes_annulee_count }} / {{ total_demandes }}</h5>
+                        <p class="card-text">Demandes annulées (par le client ou admin).</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    {# Section pour les dernières demandes #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Dernières Demandes</h3>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title fs-3">{{ demandes_annulee_count }} / {{ total_demandes }}</h5>
-                    <p class="card-text">Demandes annulées (par le client ou admin).</p>
+                    {% if dernieres_demandes %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client</th>
+                                        <th>Service</th>
+                                        <th>Date</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for demande in dernieres_demandes %}
+                                    <tr>
+                                        <td>{{ demande.id }}</td>
+                                        <td>{{ demande.client.username }}</td>
+                                        <td>{{ demande.service.nom }}</td>
+                                        <td>{{ demande.date_creation|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if demande.statut == 'en_attente' %}bg-warning
+                                                {% elif demande.statut == 'acceptee' %}bg-success
+                                                {% elif demande.statut == 'rejetee' %}bg-danger
+                                                {% elif demande.statut == 'completee' %}bg-info
+                                                {% else %}bg-dark{% endif %}">
+                                                {{ demande.get_statut_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'demande:view_demande' demande.id %}" class="btn btn-sm btn-primary">Voir</a>
+                                            <a href="{% url 'demande:edit_demande' demande.id %}" class="btn btn-sm btn-warning">Modifier</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center">Aucune demande récente.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
-
-    </div> {# Fin de la deuxième ligne #}
-
-    {# Vous pouvez ajouter d'autres sections ici, comme des tableaux des derniers utilisateurs, etc. #}
-
-
+    </div>
 {% endblock %}

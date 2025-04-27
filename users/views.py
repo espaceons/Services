@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+
+from users.models import CustomUser
 from .forms import CustomUserCreationForm, ProfileUpdateForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # inscription nouveau utilisateur :
@@ -116,3 +118,12 @@ def upload_profile_pic(request):
         user.profile_picture = request.FILES['profile_picture']
         user.save()
     return redirect('users:profile')
+
+
+# liste des utilisateurs:
+
+@login_required
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def liste_utilisateurs(request):
+    users = CustomUser.objects.all().order_by('-date_joined')
+    return render(request, 'users/liste_utilisateurs.html', {'users': users})

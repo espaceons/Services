@@ -14,30 +14,29 @@
                 <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
                     
-                    <!-- Champ Email -->
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">Email*</label>
-                        {% render_field form.email class="form-control" placeholder="exemple@domain.com" %}
-                        {% if form.email.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.email.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Champ Username -->
+                    <!-- Champ Nom d'utilisateur -->
                     <div class="mb-3">
                         <label for="{{ form.username.id_for_label }}" class="form-label">Nom d'utilisateur*</label>
                         {% render_field form.username class="form-control" placeholder="Choisissez un pseudo" %}
-                        <small class="text-muted">150 caractères max. Lettres, chiffres et @/./+/-/_ seulement.</small>
                         {% if form.username.errors %}
                             <div class="invalid-feedback d-block">
                                 {{ form.username.errors }}
                             </div>
                         {% endif %}
                     </div>
+
+                    <!-- Champ Téléphone -->
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Téléphone*</label>
+                        {% render_field form.phone class="form-control" placeholder="+33 6 12 34 56 78" %}
+                        {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
                     
-                    <!-- Champ Mot de passe 1 -->
+                    <!-- Champ Mot de passe -->
                     <div class="mb-3">
                         <label for="{{ form.password1.id_for_label }}" class="form-label">Mot de passe*</label>
                         {% render_field form.password1 class="form-control" %}
@@ -53,7 +52,8 @@
                         </small>
                     </div>
                     
-                    <!-- Champ Mot de passe 2 -->
+                    
+                    <!-- Champ Confirmation du mot de passe -->
                     <div class="mb-3">
                         <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmation du mot de passe*</label>
                         {% render_field form.password2 class="form-control" %}
@@ -63,28 +63,12 @@
                             </div>
                         {% endif %}
                     </div>
-                    
-                    <!-- Champ Téléphone (si présent dans le formulaire) -->
-                    {% if form.phone %}
-                    <div class="mb-3">
-                        <label for="{{ form.phone.id_for_label }}" class="form-label">Téléphone</label>
-                        {% render_field form.phone class="form-control" placeholder="+33 6 12 34 56 78" %}
-                    </div>
-                    {% endif %}
-                    
-                    <!-- Champ Photo de profil (si présent) -->
-                    {% if form.profile_picture %}
-                    <div class="mb-3">
-                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Photo de profil</label>
-                        {% render_field form.profile_picture class="form-control" %}
-                    </div>
-                    {% endif %}
-                    
+
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="bi bi-person-plus me-2"></i>S'inscrire
                         </button>
-                        <a href="{% url 'users:login' %}" class="btn btn-outline-secondary">
+                        <a href="{% url 'users:client_login' %}" class="btn btn-outline-secondary">
                             Déjà un compte ? Se connecter
                         </a>
                     </div>

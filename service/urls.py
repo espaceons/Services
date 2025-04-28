@@ -22,7 +22,7 @@ from django.conf.urls.static import static # Importez static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('users.urls')),  # Incluez les URLs de l'application users
+    path('', include('users.urls')),  # Inclure les URLs de l'application users
     path('admindashboard/', include('dashboard.urls')), # Inclure les URLs de votre tableau de bord
     path('articles/', include('articles.urls')), # Inclure les URLs de votre application articles
     path('demandes/', include('demande.urls')), # Inclure les URLs de votre application demande

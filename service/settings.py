@@ -30,10 +30,22 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+# ----------------------
 
+# Authentification avec téléphone et email
+AUTHENTICATION_BACKENDS = [
+    'users.backends.PhoneBackend',         # Connexion par téléphone
+    'django.contrib.auth.backends.ModelBackend', # Connexion par email
+]
 
 AUTH_USER_MODEL = 'users.CustomUser'  # Indiquez à Django d'utiliser votre modèle d'utilisateur personnalisé
-LOGIN_URL = '/users/login/'  # Redirige vers votre vue de login personnalisée en cas ou utilisateur non connecté
+LOGIN_URL = 'users:client_login'  # Redirige vers votre vue de login personnalisée en cas ou utilisateur non connecté
+
+
+
+
+# ----------------------
+
 
 INSTALLED_APPS = [
     'users',# Pour l'application d'utilisateurs
